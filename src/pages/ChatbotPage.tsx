@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import api from '../api';
+import { motion, AnimatePresence } from 'framer-motion';
+import './ChatbotPage.css';
 
 const ChatbotPage: React.FC = () => {
   const [messages, setMessages] = useState<{ from: 'user' | 'ai'; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showTyping, setShowTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (loading) {
+      setShowTyping(true);
+    } else {
+      setShowTyping(false);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, showTyping]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,10 +29,10 @@ const ChatbotPage: React.FC = () => {
     setMessages([...messages, { from: 'user', text: input }]);
     setLoading(true);
     setError('');
+    setInput('');
     try {
       const res = await api.post('/chatbot', { message: input });
       setMessages(msgs => [...msgs, { from: 'ai', text: res.data.response }]);
-      setInput('');
     } catch (err) {
       setError('Failed to get AI response');
     } finally {
@@ -25,29 +41,68 @@ const ChatbotPage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <h2>AI Chatbot</h2>
-      <div style={{ minHeight: 200, border: '1px solid #ccc', padding: 12, marginBottom: 12 }}>
-        {messages.length === 0 && <div style={{ color: '#888' }}>Start the conversation...</div>}
-        {messages.map((msg, i) => (
-          <div key={i} style={{ textAlign: msg.from === 'user' ? 'right' : 'left', margin: '8px 0' }}>
-            <b>{msg.from === 'user' ? 'You' : 'AI'}:</b> {msg.text}
-          </div>
-        ))}
+    <div className="chatbot-page-bg">
+      <div className="chatbot-container chatbot-large">
+        <h2 className="chatbot-title">AI Chatbot</h2>
+        <div className="chatbot-messages">
+          {messages.length === 0 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="chatbot-placeholder">
+              Start the conversation...
+            </motion.div>
+          )}
+          <AnimatePresence initial={false}>
+            {messages.map((msg, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`chatbot-bubble ${msg.from}`}
+              >
+                <span className="chatbot-bubble-label">{msg.from === 'user' ? 'You' : 'AI'}</span>
+                <span>{msg.text}</span>
+              </motion.div>
+            ))}
+            {showTyping && (
+              <motion.div
+                key="typing"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="chatbot-bubble ai chatbot-typing"
+              >
+                <span className="chatbot-bubble-label">AI</span>
+                <span className="typing-indicator">
+                  <span className="dot" />
+                  <span className="dot" />
+                  <span className="dot" />
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div ref={messagesEndRef} />
+        </div>
+        <form className="chatbot-input-row" onSubmit={sendMessage}>
+          <input
+            className="chatbot-input"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Type your message..."
+            disabled={loading}
+            autoFocus
+          />
+          <motion.button
+            type="submit"
+            className="chatbot-send-btn"
+            whileTap={{ scale: 0.95 }}
+            disabled={loading || !input.trim()}
+          >
+            {loading ? '...' : 'Send'}
+          </motion.button>
+        </form>
+        {error && <div className="chatbot-error">{error}</div>}
       </div>
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Type your message..."
-          style={{ flex: 1 }}
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading || !input.trim()}>
-          {loading ? '...' : 'Send'}
-        </button>
-      </form>
-      {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
     </div>
   );
 };
