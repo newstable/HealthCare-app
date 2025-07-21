@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { Card, CardContent, Typography, TextField, Button, Alert, Box, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+
+const primaryColor = '#4e54c8';
+const secondaryColor = '#8f94fb';
+const buttonRadius = 18;
 
 const RecordsPage: React.FC = () => {
   const [role, setRole] = useState<string>('');
@@ -63,53 +68,76 @@ const RecordsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <h2>Health Records</h2>
-      {role === 'patient' && (
-        <form onSubmit={handleAddRecord} style={{ marginBottom: 16 }}>
-          <input
-            placeholder="Description"
-            value={desc}
-            onChange={e => setDesc(e.target.value)}
-            required
-            style={{ display: 'block', marginBottom: 8, width: '100%' }}
-          />
-          <textarea
-            placeholder="Data (JSON)"
-            value={data}
-            onChange={e => setData(e.target.value)}
-            style={{ display: 'block', marginBottom: 8, width: '100%' }}
-          />
-          <button type="submit">Add Record</button>
-        </form>
-      )}
-      {role === 'doctor' && (
-        <form onSubmit={e => { e.preventDefault(); fetchPatientRecords(); }} style={{ marginBottom: 16 }}>
-          <input
-            placeholder="Patient ID"
-            value={patientId}
-            onChange={e => setPatientId(e.target.value)}
-            required
-            style={{ marginRight: 8 }}
-          />
-          <button type="submit">View Patient Records</button>
-        </form>
-      )}
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <ul>
-          {records.map((rec, i) => (
-            <li key={rec._id || i} style={{ marginBottom: 12 }}>
-              <b>{rec.date?.slice(0, 10)}</b>: {rec.description}
-              <pre style={{ background: '#f4f4f4', padding: 8 }}>{JSON.stringify(rec.data, null, 2)}</pre>
-            </li>
-          ))}
-        </ul>
-      )}
-      {success && <div style={{ color: 'green', marginTop: 8 }}>{success}</div>}
-      {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
-    </div>
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh" sx={{ background: 'linear-gradient(120deg, #f8fafc 0%, #e0eafc 100%)' }}>
+      <Card sx={{ minWidth: 350, maxWidth: 600, width: '100%', boxShadow: 4, p: 2, borderRadius: 5, background: 'linear-gradient(120deg, #f8fafc 0%, #e0eafc 100%)' }}>
+        <CardContent>
+          <Typography variant="h4" fontWeight={700} mb={3} align="center" sx={{ color: primaryColor, letterSpacing: 1 }}>
+            Health Records
+          </Typography>
+          {role === 'patient' && (
+            <Box component="form" onSubmit={handleAddRecord} mb={3}>
+              <TextField
+                label="Description"
+                value={desc}
+                onChange={e => setDesc(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+                sx={{ background: '#fff', borderRadius: 2, fontWeight: 600, fontSize: '1.1rem' }}
+                InputProps={{ style: { fontWeight: 600, fontSize: '1.1rem' } }}
+              />
+              <TextField
+                label="Data (JSON)"
+                value={data}
+                onChange={e => setData(e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                minRows={4}
+                sx={{ background: '#fff', borderRadius: 2, fontSize: '1rem' }}
+                InputProps={{ style: { fontSize: '1rem' } }}
+              />
+              <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, borderRadius: buttonRadius, background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`, fontWeight: 700, fontSize: '1.1rem', letterSpacing: 1 }} disabled={loading}>
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'ADD RECORD'}
+              </Button>
+            </Box>
+          )}
+          {role === 'doctor' && (
+            <Box component="form" onSubmit={e => { e.preventDefault(); fetchPatientRecords(); }} mb={3} display="flex" gap={2}>
+              <TextField
+                label="Patient ID"
+                value={patientId}
+                onChange={e => setPatientId(e.target.value)}
+                required
+                fullWidth
+                sx={{ background: '#fff', borderRadius: 2 }}
+              />
+              <Button type="submit" variant="contained" sx={{ borderRadius: buttonRadius, background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`, fontWeight: 700 }} disabled={loading}>
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'VIEW PATIENT RECORDS'}
+              </Button>
+            </Box>
+          )}
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={120}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <List>
+              {records.map((rec, i) => (
+                <ListItem key={rec._id || i} alignItems="flex-start" sx={{ mb: 2, borderRadius: 3, boxShadow: 2, bgcolor: '#fff', border: `1.5px solid ${primaryColor}22` }}>
+                  <ListItemText
+                    primary={<Typography variant="h6" sx={{ color: primaryColor, fontWeight: 600 }}>{rec.date?.slice(0, 10)}: {rec.description}</Typography>}
+                    secondary={<pre style={{ background: 'none', padding: 0, margin: 0, color: '#333', fontSize: '1rem' }}>{JSON.stringify(rec.data, null, 2)}</pre>}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+          {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

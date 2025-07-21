@@ -1,11 +1,12 @@
 .chatbot-page-bg {
-  min-height: 70vh;
-  width: 100%;
+  min-height: calc(100vh - 64px);
+  
   background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 0 32px 0;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  margin: 0;
   animation: bg-move 10s linear infinite alternate;
 }
 
@@ -16,21 +17,33 @@
 
 .chatbot-container {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 24px;
+  border-radius: 32px;
   box-shadow: 0 8px 32px rgba(60, 60, 120, 0.15);
   width: 100%;
-  max-width: 420px;
-  padding: 32px 20px 20px 20px;
-  margin: 0 auto;
+  height: 100%;
+  max-width: none;
+  min-height: calc(100vh - 64px);
+  margin: 0;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-content: flex-start;
+  padding: 48px 0 0 0;
 }
 
-.chatbot-container.chatbot-large {
-  max-width: 700px;
-  min-height: 500px;
+.chatbot-large {
+  max-width: none;
+  min-height: calc(100vh - 64px);
+  border-radius: 0;
+  justify-content: space-between;
+}
+
+@media (max-width: 900px) {
+  .chatbot-container, .chatbot-large {
+    border-radius: 0;
+    padding: 24px 0 0 0;
+  }
 }
 
 .chatbot-title {
@@ -44,7 +57,7 @@
 
 .chatbot-messages {
   min-height: 260px;
-  max-height: 340px;
+  max-height: 100%;
   overflow-y: auto;
   padding: 8px 0 8px 0;
   margin-bottom: 18px;
