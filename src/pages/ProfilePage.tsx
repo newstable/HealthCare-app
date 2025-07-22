@@ -15,9 +15,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onLogout, onUpdate, 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   React.useEffect(() => {
     setForm(profile || {});
+    setSelectedImage(null);
   }, [profile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,11 +41,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onLogout, onUpdate, 
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedImage(URL.createObjectURL(file));
       setImageUploading(true);
       setError('');
       setSuccess('');
       try {
-        await onUploadImage(e.target.files[0]);
+        await onUploadImage(file);
         setSuccess('Image uploaded!');
       } catch {
         setError('Image upload failed');
@@ -58,7 +62,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, onLogout, onUpdate, 
       <Card sx={{ minWidth: 350, maxWidth: 420, width: '100%', boxShadow: 3, p: 2 }}>
         <CardContent>
           <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-            <Avatar src={profile?.avatarUrl} sx={{ width: 80, height: 80, mb: 1 }} />
+            <Avatar src={selectedImage || profile?.avatarUrl} sx={{ width: 80, height: 80, mb: 1 }} />
             <Button variant="outlined" component="label" size="small" disabled={imageUploading} sx={{ mb: 1 }}>
               {imageUploading ? <CircularProgress size={18} /> : 'Upload Image'}
               <input type="file" accept="image/*" hidden onChange={handleImageChange} />
