@@ -402,8 +402,8 @@ const App: React.FC = () => {
       <AuthProvider>
         <Router>
           <Navigation />
-          <Container maxWidth="lg" sx={{ mt: 4 }}>
-            <Box sx={{ minHeight: '80vh', py: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
+            <Box sx={{ minHeight: 'calc(100vh - 120px)', py: 2 }}>
               <Routes>
                 <Route path="/" element={<AuthPage />} />
                 <Route

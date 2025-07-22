@@ -68,7 +68,7 @@ const RecordsPage: React.FC = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh" sx={{ background: 'linear-gradient(120deg, #f8fafc 0%, #e0eafc 100%)' }}>
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
       <Card sx={{ minWidth: 350, maxWidth: 600, width: '100%', boxShadow: 4, p: 2, borderRadius: 5, background: 'linear-gradient(120deg, #f8fafc 0%, #e0eafc 100%)' }}>
         <CardContent>
           <Typography variant="h4" fontWeight={700} mb={3} align="center" sx={{ color: primaryColor, letterSpacing: 1 }}>

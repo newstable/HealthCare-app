@@ -132,16 +132,16 @@ const AppointmentsPage: React.FC = () => {
       justifyContent="center" 
       alignItems="center" 
       minHeight="80vh" 
-      sx={{ 
-        background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 50%, #CBD5E0 100%)',
-        backgroundSize: '400% 400%',
-        animation: 'gradientShift 15s ease infinite',
-        '@keyframes gradientShift': {
-          '0%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-          '100%': { backgroundPosition: '0% 50%' },
-        },
-      }}
+      // sx={{ 
+      //   background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 50%, #CBD5E0 100%)',
+      //   backgroundSize: '400% 400%',
+      //   animation: 'gradientShift 15s ease infinite',
+      //   '@keyframes gradientShift': {
+      //     '0%': { backgroundPosition: '0% 50%' },
+      //     '50%': { backgroundPosition: '100% 50%' },
+      //     '100%': { backgroundPosition: '0% 50%' },
+      //   },
+      // }}
     >
       <Card sx={{ 
         minWidth: 350, 
