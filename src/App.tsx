@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import AuthPage from './pages/AuthPage';
+import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import RecordsPage from './pages/RecordsPage';
 import AppointmentsPage from './pages/AppointmentsPage';
@@ -215,6 +216,7 @@ export const useAuth = () => useContext(AuthContext);
 
 const navLinks = [
   { to: '/', label: 'Auth', auth: false },
+  { to: '/about', label: 'About Us', auth: false },
   { to: '/records', label: 'Health Records', auth: true },
   { to: '/appointments', label: 'Appointments', auth: true },
   { to: '/chatbot', label: 'AI Chatbot', auth: true },
@@ -406,6 +408,7 @@ const App: React.FC = () => {
             <Box sx={{ minHeight: 'calc(100vh - 120px)', py: 2 }}>
               <Routes>
                 <Route path="/" element={<AuthPage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route
                   path="/profile"
                   element={
